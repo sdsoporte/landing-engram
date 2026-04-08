@@ -15,12 +15,23 @@ export function Hero() {
 
       <Container className="relative z-10 text-center">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Tagline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-            <span className="text-[var(--color-text)]">Persistent memory</span>
-            <br />
-            <span className="text-[var(--color-mauve)]">for AI agents</span>
+          {/* Logo/Name */}
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--color-surface0)]/50 border border-[var(--color-surface1)]">
+            <div className="w-3 h-3 rounded-full bg-[var(--color-mauve)] animate-pulse" />
+            <span className="text-sm font-mono text-[var(--color-subtext0)]">Open Source</span>
+          </div>
+
+          {/* Product Name */}
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight">
+            <span className="bg-gradient-to-r from-[var(--color-mauve)] via-[var(--color-pink)] to-[var(--color-blue)] bg-clip-text text-transparent">
+              Engram
+            </span>
           </h1>
+
+          {/* Tagline */}
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[var(--color-text)]">
+            Persistent memory for AI agents
+          </h2>
 
           {/* Subheadline */}
           <p className="text-lg sm:text-xl md:text-2xl text-[var(--color-subtext0)] max-w-2xl mx-auto">
