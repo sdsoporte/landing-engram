@@ -8,17 +8,17 @@ export function Hero() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Neural network background */}
       <div className="absolute inset-0 z-0">
-        <NeuralNetwork className="opacity-60" />
+        <NeuralNetwork className="opacity-70" />
         {/* Gradient overlay for better text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-base)] via-transparent to-[var(--color-base)] opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-base)]/80 via-[var(--color-base)]/20 to-[var(--color-base)]/80" />
       </div>
 
       <Container className="relative z-10 text-center">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Logo/Name */}
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--color-surface0)]/50 border border-[var(--color-surface1)]">
-            <div className="w-3 h-3 rounded-full bg-[var(--color-mauve)] animate-pulse" />
-            <span className="text-sm font-mono text-[var(--color-subtext0)]">Open Source</span>
+          {/* Logo/Name - Larger, more prominent */}
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[var(--color-surface0)]/80 border border-[var(--color-mauve)]/30 backdrop-blur-sm">
+            <div className="w-4 h-4 rounded-full bg-[var(--color-mauve)] animate-pulse shadow-lg shadow-[var(--color-mauve)]/50" />
+            <span className="text-base font-mono font-semibold text-[var(--color-text)]">Open Source</span>
           </div>
 
           {/* Product Name */}
@@ -33,11 +33,11 @@ export function Hero() {
             Persistent memory for AI agents
           </h2>
 
-          {/* Subheadline */}
-          <p className="text-lg sm:text-xl md:text-2xl text-[var(--color-subtext0)] max-w-2xl mx-auto">
-            A Go binary with SQLite + FTS5 full-text search.
+          {/* Subheadline - More human, less technical */}
+          <p className="text-lg sm:text-xl md:text-2xl text-[var(--color-subtext0)] max-w-2xl mx-auto leading-relaxed">
+            Give your AI coding assistant a long-term memory.
             <br className="hidden sm:block" />
-            Agent-agnostic. Cross-platform. Zero runtime dependencies.
+            <span className="text-[var(--color-subtext1)]">Cross-platform • Zero dependencies • Works with any agent</span>
           </p>
 
           {/* CTA buttons */}

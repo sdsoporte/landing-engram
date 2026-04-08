@@ -9,8 +9,8 @@
 
   /* Text colors */
   --color-text: #cdd6f4;
-  --color-subtext0: #a6adc8;
-  --color-subtext1: #bac2de;
+  --color-subtext0: #bac2de; /* Increased from #a6adc8 for better contrast */
+  --color-subtext1: #c9d1ec; /* Lighter for even better readability */
 
   /* Surface colors */
   --color-surface0: #313244;

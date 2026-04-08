@@ -12,11 +12,11 @@ export function Card({ icon, title, description, className }: CardProps) {
     <div
       className={cn(
         'group flex flex-col items-start gap-4 rounded-xl',
-        'bg-[var(--color-surface0)] p-6',
+        'bg-[var(--color-surface0)] p-8',
         'border border-[var(--color-surface1)]',
         'hover:border-[var(--color-mauve)] hover:shadow-lg hover:shadow-[var(--color-mauve)]/10',
         'transition-all duration-300',
-        'hover:-translate-y-1',
+        'hover:-translate-y-2 hover:scale-[1.02]',
         className
       )}
     >
