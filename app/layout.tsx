@@ -70,7 +70,7 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[var(--color-base)] text-[var(--color-text)]">
+      <body className="min-h-full flex flex-col bg-[--color-base] text-[--color-text]">
         {children}
       </body>
     </html>

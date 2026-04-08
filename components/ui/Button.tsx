@@ -12,9 +12,9 @@ interface ButtonProps {
 }
 
 const variantStyles = {
-  primary: 'bg-[var(--color-mauve)] text-[var(--color-base)] hover:bg-[var(--color-pink)] transition-colors',
-  secondary: 'border-2 border-[var(--color-mauve)] text-[var(--color-mauve)] hover:bg-[var(--color-mauve)] hover:text-[var(--color-base)] transition-colors',
-  ghost: 'text-[var(--color-subtext0)] hover:text-[var(--color-text)] transition-colors',
+  primary: 'bg-[--color-mauve] text-[--color-base] hover:bg-[--color-pink] transition-colors',
+  secondary: 'border-2 border-[--color-mauve] text-[--color-mauve] hover:bg-[--color-mauve] hover:text-[--color-base] transition-colors',
+  ghost: 'text-[--color-subtext0] hover:text-[--color-text] transition-colors',
 };
 
 const sizeStyles = {
@@ -34,7 +34,7 @@ export function Button({
 }: ButtonProps) {
   const styles = cn(
     'inline-flex items-center justify-center gap-2 rounded-lg font-semibold',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-mauve)]',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-mauve]',
     'disabled:pointer-events-none disabled:opacity-50',
     variantStyles[variant],
     sizeStyles[size],
@@ -57,7 +57,7 @@ export function Button({
   }
 
   return (
-    <button onClick={onClick} className={styles}>
+    <button type="button" onClick={onClick} className={styles}>
       {children}
     </button>
   );

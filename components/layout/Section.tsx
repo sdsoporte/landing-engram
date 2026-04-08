@@ -8,9 +8,9 @@ interface SectionProps {
 }
 
 const variantStyles = {
-  default: 'bg-[var(--color-base)]',
-  muted: 'bg-[var(--color-mantle)]',
-  accent: 'bg-[var(--color-crust)]',
+  default: 'bg-[--color-base]',
+  muted: 'bg-[--color-mantle]',
+  accent: 'bg-[--color-crust]',
 };
 
 export function Section({

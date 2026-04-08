@@ -54,11 +54,11 @@ export function Features() {
     <Section id="features" variant="muted">
       <Container>
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-text)] mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[--color-text] mb-4">
             Everything you need for{' '}
-            <span className="text-[var(--color-mauve)]">persistent memory</span>
+            <span className="text-[--color-mauve]">persistent memory</span>
           </h2>
-          <p className="text-lg text-[var(--color-subtext0)] max-w-2xl mx-auto">
+          <p className="text-lg text-[--color-subtext0] max-w-2xl mx-auto">
             Six powerful features designed for AI coding agents. Multiple interfaces, powerful search, and team collaboration.
           </p>
         </div>

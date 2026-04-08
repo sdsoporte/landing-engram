@@ -7,23 +7,23 @@ export function CTA() {
   return (
     <Section id="cta" className="relative overflow-hidden">
       {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-mauve)]/20 via-[var(--color-base)] to-[var(--color-pink)]/20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[--color-mauve]/20 via-[--color-base] to-[--color-pink]/20" />
 
       <Container className="relative z-10">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           {/* Star icon */}
           <div className="flex justify-center">
-            <div className="w-20 h-20 rounded-full bg-[var(--color-mauve)]/20 flex items-center justify-center">
-              <Star className="w-10 h-10 text-[var(--color-mauve)]" />
+            <div className="w-20 h-20 rounded-full bg-[--color-mauve]/20 flex items-center justify-center">
+              <Star className="w-10 h-10 text-[--color-mauve]" />
             </div>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-text)]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[--color-text]">
             Ready to give your AI agent{' '}
-            <span className="text-[var(--color-mauve)]">persistent memory</span>?
+            <span className="text-[--color-mauve]">persistent memory</span>?
           </h2>
 
-          <p className="text-lg text-[var(--color-subtext0)] max-w-xl mx-auto">
+          <p className="text-lg text-[--color-subtext0] max-w-xl mx-auto">
             Open source, MIT licensed. Built by developers, for developers.
             Star the repo and start using engram today.
           </p>
@@ -51,21 +51,21 @@ export function CTA() {
             </Button>
           </div>
 
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-8 pt-8 text-[var(--color-subtext1)]">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--color-text)]">2.3k+</div>
-              <div className="text-sm">GitHub Stars</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--color-text)]">Go</div>
-              <div className="text-sm">Single Binary</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--color-text)]">MIT</div>
-              <div className="text-sm">License</div>
-            </div>
-          </div>
+  {/* Stats */}
+  <div className="flex flex-wrap justify-center gap-8 pt-8 text-[--color-subtext1]">
+    <div className="text-center">
+      <div className="text-2xl font-bold text-[--color-text]">Growing</div>
+      <div className="text-sm">Community</div>
+    </div>
+    <div className="text-center">
+      <div className="text-2xl font-bold text-[--color-text]">Go</div>
+      <div className="text-sm">Single Binary</div>
+    </div>
+    <div className="text-center">
+      <div className="text-2xl font-bold text-[--color-text]">MIT</div>
+      <div className="text-sm">License</div>
+    </div>
+  </div>
         </div>
       </Container>
     </Section>

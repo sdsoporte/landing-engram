@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface NeuralNetworkProps {
@@ -18,16 +18,30 @@ interface Node {
   pulseSpeed: number;
 }
 
-// Catppuccin Mocha accent colors - bright, visible
-const nodeColors = [
-  '#cba6f7', // mauve
-  '#f5c2e7', // pink
-  '#89b4fa', // blue
-  '#f38ba8', // red
-  '#a6e3a1', // green
-  '#fab387', // peach
-  '#b4befe', // lavender
+// Catppuccin Mocha accent colors - extracted as named constants
+const COLORS = {
+  mauve: '#cba6f7',
+  pink: '#f5c2e7',
+  blue: '#89b4fa',
+  red: '#f38ba8',
+  green: '#a6e3a1',
+  peach: '#fab387',
+  lavender: '#b4befe',
+  white: '#ffffff',
+};
+
+const NODE_COLORS = [
+  COLORS.mauve,
+  COLORS.pink,
+  COLORS.blue,
+  COLORS.red,
+  COLORS.green,
+  COLORS.peach,
+  COLORS.lavender,
 ];
+
+const CONNECTION_COLOR_RGB = '203, 166, 247'; // mauve RGB for rgba()
+const MAX_CONNECTIONS_PER_NODE = 4; // Limit to avoid O(n²) explosion
 
 export function NeuralNetwork({ className }: NeuralNetworkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -35,12 +49,15 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
   const animationRef = useRef<number | null>(null);
   const reducedMotion = useReducedMotion();
 
-  const initNodes = useCallback((width: number, height: number) => {
+  function initNodes(width: number, height: number) {
     if (width === 0 || height === 0) return;
 
+    // Clear existing nodes to prevent memory leak on resize
+    nodesRef.current = [];
+
     const nodes: Node[] = [];
-    // 50-70 nodes distributed across the screen
-    const nodeCount = Math.max(50, Math.min(70, Math.floor((width * height) / 12000)));
+    // Reduced from 50-70 to 35-45 for better performance
+    const nodeCount = Math.max(35, Math.min(45, Math.floor((width * height) / 15000)));
 
     for (let i = 0; i < nodeCount; i++) {
       const x = Math.random() * width;
@@ -50,43 +67,42 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         y,
         vx: (Math.random() - 0.5) * 0.08,
         vy: (Math.random() - 0.5) * 0.08,
-        radius: Math.random() * 3 + 3, // Larger nodes (3-6px)
-        color: nodeColors[Math.floor(Math.random() * nodeColors.length)],
+        radius: Math.random() * 3 + 3,
+        color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
         pulse: Math.random() * Math.PI * 2,
         pulseSpeed: 0.02 + Math.random() * 0.02,
       });
     }
 
     nodesRef.current = nodes;
-  }, []);
+  }
 
-  const draw = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number, time: number) => {
+  function draw(ctx: CanvasRenderingContext2D, width: number, height: number, time: number) {
     const nodes = nodesRef.current;
-    // Connection distance scales with screen
     const connectionDistance = Math.min(width, height) * 0.15;
 
-    // Clear canvas
     ctx.clearRect(0, 0, width, height);
 
-    // Draw connections FIRST (behind nodes)
+    // Draw connections with early exit optimization
     ctx.globalAlpha = 0.6;
     for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
+      let connectionCount = 0;
+      for (let j = i + 1; j < nodes.length && connectionCount < MAX_CONNECTIONS_PER_NODE; j++) {
         const dx = nodes[i].x - nodes[j].x;
         const dy = nodes[i].y - nodes[j].y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance < connectionDistance) {
           const opacity = 1 - distance / connectionDistance;
-          // Pulsing connection effect
           const pulse = Math.sin(time + nodes[i].pulse) * 0.3 + 0.7;
-          
+
           ctx.beginPath();
           ctx.moveTo(nodes[i].x, nodes[i].y);
           ctx.lineTo(nodes[j].x, nodes[j].y);
-          ctx.strokeStyle = `rgba(203, 166, 247, ${opacity * pulse * 0.4})`;
+          ctx.strokeStyle = `rgba(${CONNECTION_COLOR_RGB}, ${opacity * pulse * 0.4})`;
           ctx.lineWidth = opacity * 2;
           ctx.stroke();
+          connectionCount++;
         }
       }
     }
@@ -94,11 +110,10 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
 
     // Draw nodes with glow
     for (const node of nodes) {
-      // Update pulse
       node.pulse += node.pulseSpeed;
       const pulseScale = 1 + Math.sin(node.pulse) * 0.2;
 
-      // Outer glow (larger, subtle)
+      // Outer glow
       const gradient = ctx.createRadialGradient(
         node.x,
         node.y,
@@ -108,39 +123,37 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         node.radius * 4 * pulseScale
       );
       gradient.addColorStop(0, node.color);
-      gradient.addColorStop(0.5, node.color + '80'); // 50% opacity
+      gradient.addColorStop(0.5, node.color + '80');
       gradient.addColorStop(1, 'transparent');
-      
+
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.radius * 4 * pulseScale, 0, Math.PI * 2);
       ctx.fillStyle = gradient;
       ctx.fill();
 
-      // Inner node (solid)
+      // Inner node
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.radius * pulseScale, 0, Math.PI * 2);
       ctx.fillStyle = node.color;
       ctx.fill();
 
-      // Bright center highlight
+      // Bright center
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.radius * 0.4 * pulseScale, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = COLORS.white;
       ctx.globalAlpha = 0.6;
       ctx.fill();
       ctx.globalAlpha = 1;
     }
-  }, []);
+  }
 
-  const update = useCallback((width: number, height: number) => {
+  function update(width: number, height: number) {
     const nodes = nodesRef.current;
 
     for (const node of nodes) {
-      // Gentle movement
       node.x += node.vx;
       node.y += node.vy;
 
-      // Soft bounce off edges
       const padding = 50;
       if (node.x < padding) {
         node.vx = Math.abs(node.vx) * 0.8;
@@ -159,30 +172,32 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         node.y = height - padding;
       }
     }
-  }, []);
+  }
 
-  const animate = useCallback(() => {
+  function animate() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    const width = canvas.width;
-    const height = canvas.height;
+    // Use logical dimensions (CSS pixels) for consistency with handleResize
+    const dpr = window.devicePixelRatio || 1;
+    const logicalWidth = canvas.width / dpr;
+    const logicalHeight = canvas.height / dpr;
 
-    if (width === 0 || height === 0) {
+    if (logicalWidth === 0 || logicalHeight === 0) {
       animationRef.current = requestAnimationFrame(animate);
       return;
     }
 
-    const time = Date.now() * 0.001;
+    const time = performance.now() * 0.001;
 
-    update(width, height);
-    draw(ctx, width, height, time);
+    update(logicalWidth, logicalHeight);
+    draw(ctx, logicalWidth, logicalHeight, time);
 
     animationRef.current = requestAnimationFrame(animate);
-  }, [draw, update]);
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -194,8 +209,18 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         const width = parent.clientWidth;
         const height = parent.clientHeight;
         if (width > 0 && height > 0) {
-          canvas.width = width;
-          canvas.height = height;
+          // DPR handling for sharp rendering on Retina displays
+          const dpr = window.devicePixelRatio || 1;
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          canvas.style.width = `${width}px`;
+          canvas.style.height = `${height}px`;
+
+          const ctx = canvas.getContext('2d', { alpha: true });
+          if (ctx) {
+            ctx.scale(dpr, dpr);
+          }
+
           initNodes(width, height);
         }
       }
@@ -204,14 +229,20 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     handleResize();
     window.addEventListener('resize', handleResize);
 
-    if (!reducedMotion) {
-      animate();
-    } else {
-      const ctx = canvas.getContext('2d');
-      if (ctx && canvas.width > 0 && canvas.height > 0) {
-        draw(ctx, canvas.width, canvas.height, 0);
+  if (!reducedMotion) {
+    animate();
+  } else {
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (ctx) {
+      // DPR was already handled in handleResize, just draw
+      const dpr = window.devicePixelRatio || 1;
+      const logicalWidth = canvas.width / dpr;
+      const logicalHeight = canvas.height / dpr;
+      if (logicalWidth > 0 && logicalHeight > 0) {
+        draw(ctx, logicalWidth, logicalHeight, 0);
       }
     }
+  }
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -219,7 +250,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [animate, draw, initNodes, reducedMotion]);
+  }, [reducedMotion]);
 
   return (
     <canvas

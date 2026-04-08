@@ -30,10 +30,10 @@ export function Problem() {
     <Section id="problem" variant="muted">
       <Container>
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-text)] mb-4">
-            AI agents forget <span className="text-[var(--color-red)]">everything</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[--color-text] mb-4">
+            AI agents forget <span className="text-[--color-red]">everything</span>
           </h2>
-          <p className="text-lg text-[var(--color-subtext0)]">
+          <p className="text-lg text-[--color-subtext0]">
             Without persistent memory, your AI coding assistant loses context between sessions.
             This leads to inefficiency, repeated work, and fragmented understanding.
           </p>
@@ -43,16 +43,16 @@ export function Problem() {
           {problems.map((problem, index) => (
             <div
               key={index}
-              className="flex items-start gap-4 p-6 rounded-lg bg-[var(--color-surface0)] border border-[var(--color-surface1)]"
+              className="flex items-start gap-4 p-6 rounded-lg bg-[--color-surface0] border border-[--color-surface1]"
             >
-              <div className="flex-shrink-0 p-3 rounded-lg bg-[var(--color-red)]/10 text-[var(--color-red)]">
+              <div className="flex-shrink-0 p-3 rounded-lg bg-[--color-red]/10 text-[--color-red]">
                 {problem.icon}
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-[var(--color-text)] mb-2">
+                <h3 className="text-xl font-semibold text-[--color-text] mb-2">
                   {problem.title}
                 </h3>
-                <p className="text-[var(--color-subtext0)]">{problem.description}</p>
+                <p className="text-[--color-subtext0]">{problem.description}</p>
               </div>
             </div>
           ))}
