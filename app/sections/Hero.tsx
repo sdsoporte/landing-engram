@@ -25,7 +25,10 @@ export function Hero() {
 
           {/* Product Name */}
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-[--color-mauve] via-[--color-pink] to-[--color-blue] bg-clip-text text-transparent">
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: 'linear-gradient(to right, var(--color-mauve), var(--color-pink), var(--color-blue))' }}
+            >
               Engram
             </span>
           </h1>
