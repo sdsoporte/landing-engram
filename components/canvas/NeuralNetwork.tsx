@@ -16,10 +16,9 @@ interface Node {
   color: string;
   pulse: number;
   pulseSpeed: number;
-  isMain: boolean; // Solo los nodos principales brillan
+  isMain: boolean;
 }
 
-// Catppuccin Mocha accent colors - más sutiles para fondo global
 const COLORS = {
   mauve: '#cba6f7',
   pink: '#f5c2e7',
@@ -28,7 +27,6 @@ const COLORS = {
   white: '#ffffff',
 };
 
-// Solo 4 colores, más sutiles
 const NODE_COLORS = [
   COLORS.mauve,
   COLORS.blue,
@@ -36,9 +34,9 @@ const NODE_COLORS = [
   COLORS.pink,
 ];
 
-const CONNECTION_COLOR_RGB = '139, 148, 158'; // surface2 color - más sutil
-const MAX_CONNECTIONS_PER_NODE = 2; // Menos conexiones
-const MAIN_NODE_CHANCE = 0.3; // 30% de los nodos son "principales" y brillan
+const CONNECTION_COLOR_RGB = '147, 153, 178'; // text color - más visible
+const MAX_CONNECTIONS_PER_NODE = 3;
+const MAIN_NODE_CHANCE = 0.25; // 25% principales
 
 export function NeuralNetwork({ className }: NeuralNetworkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -51,9 +49,8 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
 
     nodesRef.current = [];
 
-    const nodes: Node[] = [];
-    // Muchos menos nodos para fondo sutil: 20-28
-    const nodeCount = Math.max(20, Math.min(28, Math.floor((width * height) / 25000)));
+    // MÁS NODOS: 35-45 (vs 20-28 antes)
+    const nodeCount = Math.max(35, Math.min(45, Math.floor((width * height) / 18000)));
 
     for (let i = 0; i < nodeCount; i++) {
       const x = Math.random() * width;
@@ -63,12 +60,13 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
       nodes.push({
         x,
         y,
-        vx: (Math.random() - 0.5) * 0.04, // Movimiento más lento
-        vy: (Math.random() - 0.5) * 0.04,
-        radius: isMain ? Math.random() * 2 + 3 : Math.random() * 1.5 + 2, // Nodos principales son más grandes
+        vx: (Math.random() - 0.5) * 0.05,
+        vy: (Math.random() - 0.5) * 0.05,
+        // MÁS GRANDES: +1px de radio
+        radius: isMain ? Math.random() * 2.5 + 3.5 : Math.random() * 2 + 2.5,
         color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
         pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.015 + Math.random() * 0.015, // Pulso más lento
+        pulseSpeed: 0.02 + Math.random() * 0.015,
         isMain,
       });
     }
@@ -78,12 +76,12 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
 
   function draw(ctx: CanvasRenderingContext2D, width: number, height: number, time: number) {
     const nodes = nodesRef.current;
-    const connectionDistance = Math.min(width, height) * 0.12; // Distancia menor
+    const connectionDistance = Math.min(width, height) * 0.14;
 
     ctx.clearRect(0, 0, width, height);
 
-    // Conexiones muy sutiles
-    ctx.globalAlpha = 0.25;
+    // Conexiones más visibles
+    ctx.globalAlpha = 0.35;
     for (let i = 0; i < nodes.length; i++) {
       let connectionCount = 0;
       for (let j = i + 1; j < nodes.length && connectionCount < MAX_CONNECTIONS_PER_NODE; j++) {
@@ -92,13 +90,13 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance < connectionDistance) {
-          const opacity = (1 - distance / connectionDistance) * 0.5;
+          const opacity = (1 - distance / connectionDistance) * 0.6;
 
           ctx.beginPath();
           ctx.moveTo(nodes[i].x, nodes[i].y);
           ctx.lineTo(nodes[j].x, nodes[j].y);
           ctx.strokeStyle = `rgba(${CONNECTION_COLOR_RGB}, ${opacity})`;
-          ctx.lineWidth = 0.5;
+          ctx.lineWidth = 0.8;
           ctx.stroke();
           connectionCount++;
         }
@@ -106,47 +104,47 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     }
     ctx.globalAlpha = 1;
 
-    // Dibujar nodos
+    // Nodos más visibles
     for (const node of nodes) {
       node.pulse += node.pulseSpeed;
       const pulseScale = 1 + Math.sin(node.pulse) * 0.15;
 
       if (node.isMain) {
-        // Solo los nodos principales tienen glow
+        // Glow más pronunciado para nodos principales
         const gradient = ctx.createRadialGradient(
           node.x,
           node.y,
           0,
           node.x,
           node.y,
-          node.radius * 3 * pulseScale
+          node.radius * 3.5 * pulseScale
         );
         gradient.addColorStop(0, node.color);
-        gradient.addColorStop(0.4, node.color + '60');
+        gradient.addColorStop(0.3, node.color + '70');
         gradient.addColorStop(1, 'transparent');
 
         ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius * 3 * pulseScale, 0, Math.PI * 2);
+        ctx.arc(node.x, node.y, node.radius * 3.5 * pulseScale, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
-        ctx.globalAlpha = 0.4;
+        ctx.globalAlpha = 0.5;
         ctx.fill();
         ctx.globalAlpha = 1;
       }
 
-      // Nodo interno (todos los nodos)
+      // Nodo base - más opaco para que se vea
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.radius * pulseScale, 0, Math.PI * 2);
       ctx.fillStyle = node.color;
-      ctx.globalAlpha = node.isMain ? 0.8 : 0.5; // Nodos principales más opacos
+      ctx.globalAlpha = node.isMain ? 0.9 : 0.7;
       ctx.fill();
       ctx.globalAlpha = 1;
 
-      // Centro brillante solo para nodos principales
+      // Centro brillante solo principales
       if (node.isMain) {
         ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius * 0.3 * pulseScale, 0, Math.PI * 2);
+        ctx.arc(node.x, node.y, node.radius * 0.35 * pulseScale, 0, Math.PI * 2);
         ctx.fillStyle = COLORS.white;
-        ctx.globalAlpha = 0.4;
+        ctx.globalAlpha = 0.5;
         ctx.fill();
         ctx.globalAlpha = 1;
       }

@@ -7,11 +7,11 @@ interface SectionProps {
   variant?: 'default' | 'muted' | 'accent';
 }
 
-// Semi-transparent backgrounds to show global neural network
+// Más transparentes para ver el neural global
 const variantStyles = {
-  default: 'bg-[--color-base]/85 backdrop-blur-sm',
-  muted: 'bg-[--color-mantle]/90 backdrop-blur-sm',
-  accent: 'bg-[--color-crust]/95 backdrop-blur-sm',
+  default: 'bg-[--color-base]/70 backdrop-blur-[2px]',
+  muted: 'bg-[--color-mantle]/75 backdrop-blur-[2px]',
+  accent: 'bg-[--color-crust]/80 backdrop-blur-[2px]',
 };
 
 export function Section({
