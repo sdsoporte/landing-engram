@@ -6,6 +6,7 @@ import { waveXMotion, viewportWidthMotion } from '@/lib/wave-motion';
 
 interface NeuralNetworkProps {
   className?: string;
+  mode?: 'full' | 'wave';
 }
 
 interface Node {
@@ -39,7 +40,7 @@ const CONNECTION_COLOR_RGB = '147, 153, 178';
 const MAX_CONNECTIONS_PER_NODE = 3;
 const MAIN_NODE_CHANCE = 0.25;
 
-export function NeuralNetwork({ className }: NeuralNetworkProps) {
+export function NeuralNetwork({ className, mode = 'full' }: NeuralNetworkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nodesRef = useRef<Node[]>([]);
   const waveNodesRef = useRef<Node[]>([]);
@@ -79,7 +80,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
       waveNodes.push({
         x: -200 - Math.random() * 200,
         y: height * 0.48 + (Math.random() - 0.5) * 100,
-        vx: 2.2 + Math.random() * 1.2,
+        vx: 1.4 + Math.random() * 0.8,
         vy: (Math.random() - 0.5) * 0.4,
         radius: Math.random() * 3 + 5,
         color: COLORS.mauve,
@@ -96,59 +97,62 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     const waveX = waveXRef.current;
 
     // Glow horizontal intenso detrás de la wave
-    const gradient = ctx.createLinearGradient(waveX - 180, 0, waveX + 180, 0);
+    const gradient = ctx.createLinearGradient(waveX - 200, 0, waveX + 200, 0);
     gradient.addColorStop(0, 'transparent');
-    gradient.addColorStop(0.5, 'rgba(203, 166, 247, 0.18)');
+    gradient.addColorStop(0.5, 'rgba(203, 166, 247, 0.14)');
     gradient.addColorStop(1, 'transparent');
     ctx.fillStyle = gradient;
-    ctx.fillRect(waveX - 180, 0, 360, height);
+    ctx.fillRect(waveX - 200, 0, 400, height);
 
     // Conexiones entre nodos de la wave
-    ctx.globalAlpha = 0.85;
+    ctx.globalAlpha = 0.9;
     for (let i = 0; i < waveNodes.length; i++) {
       for (let j = i + 1; j < waveNodes.length; j++) {
         const dx = waveNodes[i].x - waveNodes[j].x;
         const dy = waveNodes[i].y - waveNodes[j].y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 120) {
-          const opacity = (1 - distance / 120);
+        if (distance < 90) {
+          const opacity = (1 - distance / 90);
           ctx.beginPath();
           ctx.moveTo(waveNodes[i].x, waveNodes[i].y);
           ctx.lineTo(waveNodes[j].x, waveNodes[j].y);
-          ctx.strokeStyle = `rgba(203, 166, 247, ${opacity})`;
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = `rgba(230, 200, 255, ${opacity})`;
+          ctx.lineWidth = 2.2;
           ctx.stroke();
         }
       }
     }
 
-    // Nodos de la wave
+    // Nodos de la wave — más nítidos, menos borrosos
     for (const node of waveNodes) {
       node.pulse += node.pulseSpeed;
-      const pulseScale = 1 + Math.sin(node.pulse) * 0.3;
+      const pulseScale = 1 + Math.sin(node.pulse) * 0.22;
 
+      // Glow moderado
       const glow = ctx.createRadialGradient(
         node.x, node.y, 0,
-        node.x, node.y, node.radius * 7 * pulseScale
+        node.x, node.y, node.radius * 4 * pulseScale
       );
       glow.addColorStop(0, node.color);
-      glow.addColorStop(0.3, node.color + 'A0');
+      glow.addColorStop(0.5, node.color + '70');
       glow.addColorStop(1, 'transparent');
 
       ctx.beginPath();
-      ctx.arc(node.x, node.y, node.radius * 7 * pulseScale, 0, Math.PI * 2);
+      ctx.arc(node.x, node.y, node.radius * 4 * pulseScale, 0, Math.PI * 2);
       ctx.fillStyle = glow;
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.9;
       ctx.fill();
 
+      // Núcleo blanco brillante
       ctx.beginPath();
-      ctx.arc(node.x, node.y, node.radius * pulseScale, 0, Math.PI * 2);
+      ctx.arc(node.x, node.y, (node.radius * 0.7 + 1.5) * pulseScale, 0, Math.PI * 2);
       ctx.fillStyle = COLORS.white;
       ctx.globalAlpha = 1;
       ctx.fill();
 
+      // Centro coloreado
       ctx.beginPath();
-      ctx.arc(node.x, node.y, node.radius * 0.45 * pulseScale, 0, Math.PI * 2);
+      ctx.arc(node.x, node.y, node.radius * 0.35 * pulseScale, 0, Math.PI * 2);
       ctx.fillStyle = node.color;
       ctx.globalAlpha = 1;
       ctx.fill();
@@ -164,6 +168,8 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     ctx.clearRect(0, 0, width, height);
 
     drawWave(ctx, width, height);
+
+    if (mode === 'wave') return;
 
     ctx.globalAlpha = 0.35;
     for (let i = 0; i < nodes.length; i++) {
@@ -258,7 +264,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
       for (let i = 0; i < waveNodes.length; i++) {
         waveNodes[i].x = -200 - Math.random() * 200;
         waveNodes[i].y = height * 0.48 + (Math.random() - 0.5) * 100;
-        waveNodes[i].vx = 2.2 + Math.random() * 1.2;
+        waveNodes[i].vx = 1.4 + Math.random() * 0.8;
       }
     }
   }

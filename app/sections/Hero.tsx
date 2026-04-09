@@ -7,6 +7,7 @@ import { ArrowRight, Star, GitFork } from 'lucide-react';
 import { motion, useSpring, useTransform, useMotionValue } from 'framer-motion';
 import { prepareWithSegments, measureNaturalWidth } from '@chenglou/pretext';
 import { waveXMotion } from '@/lib/wave-motion';
+import { NeuralNetwork } from '@/components/canvas/NeuralNetwork';
 
 interface HeroProps {
   stars: string;
@@ -21,7 +22,7 @@ export function Hero({ stars, forks, version }: HeroProps) {
   const titleRangeRef = useRef(260);
   const badgeRangeRef = useRef(200);
 
-  const springX = useSpring(waveXMotion, { stiffness: 300, damping: 28 });
+  const springX = useSpring(waveXMotion, { stiffness: 180, damping: 20 });
   const centerXValue = useMotionValue(0);
   const waveDirectionValue = useMotionValue(1);
 
@@ -70,75 +71,80 @@ export function Hero({ stars, forks, version }: HeroProps) {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
-    return 1 - intensity * 0.14;
+    return 1 - intensity * 0.35;
   });
 
   const titleY = useTransform(springX, (x) => {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
-    return -intensity * 28;
+    return -intensity * 55;
   });
 
   const titleOpacity = useTransform(springX, (x) => {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
-    return 1 - intensity * 0.4;
+    return Math.max(0.2, 1 - intensity * 0.75);
   });
 
   const titleSpacing = useTransform(springX, (x) => {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
-    return `${intensity * 0.1}em`;
+    return `${intensity * 0.22}em`;
   });
 
   const badgeScale = useTransform(springX, (x) => {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / badgeRangeRef.current);
-    return 1 - intensity * 0.18;
+    return 1 - intensity * 0.35;
   });
 
   const badgeX = useTransform(springX, (x) => {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / badgeRangeRef.current);
-    return intensity * waveDirectionValue.get() * 60;
+    return intensity * waveDirectionValue.get() * 120;
   });
 
   const badgeY = useTransform(springX, (x) => {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / badgeRangeRef.current);
-    return -intensity * 18;
+    return -intensity * 40;
   });
 
   const badgeOpacity = useTransform(springX, (x) => {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / badgeRangeRef.current);
-    return 1 - intensity * 0.35;
+    return Math.max(0.25, 1 - intensity * 0.65);
   });
 
   const subtitleY = useTransform(springX, (x) => {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
-    return -intensity * 14;
+    return -intensity * 35;
   });
 
   const subtitleOpacity = useTransform(springX, (x) => {
     const center = centerXValue.get();
     const dist = Math.abs(x - center);
     const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
-    return 1 - intensity * 0.28;
+    return Math.max(0.3, 1 - intensity * 0.55);
   });
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-[--color-base]/60 via-[--color-base]/40 to-[--color-base]/60" />
+
+      {/* Wave overlay que pasa POR ENCIMA del texto */}
+      <div className="absolute inset-0 z-20 pointer-events-none">
+        <NeuralNetwork mode="wave" className="opacity-100" />
+      </div>
 
       <Container className="relative z-10 text-center">
         <div className="max-w-4xl mx-auto">
