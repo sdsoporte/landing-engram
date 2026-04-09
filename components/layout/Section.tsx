@@ -4,14 +4,13 @@ interface SectionProps {
   id?: string;
   children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'muted' | 'accent';
+  variant?: 'default' | 'muted';
 }
 
 // Más transparentes para ver el neural global
 const variantStyles = {
   default: 'bg-[--color-base]/70 backdrop-blur-[2px]',
   muted: 'bg-[--color-mantle]/75 backdrop-blur-[2px]',
-  accent: 'bg-[--color-crust]/80 backdrop-blur-[2px]',
 };
 
 export function Section({

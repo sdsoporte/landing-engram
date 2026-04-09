@@ -42,7 +42,7 @@ export function Installation() {
               
               <h3 className="text-lg font-semibold text-[--color-text] mb-4">Install engram</h3>
               <div className="rounded-2xl overflow-hidden border border-[--color-surface1]/50 shadow-lg shadow-black/10">
-                <CodeBlock code="brew install gentleman-programming/tap/engram" language="bash" filename="macOS / Linux via Homebrew" />
+                <CodeBlock code="brew install gentleman-programming/tap/engram" filename="macOS / Linux via Homebrew" />
               </div>
               <p className="text-sm text-[--color-subtext0] mt-3">
                 Windows, Linux (apt/deb/rpm) and manual install →{' '}
@@ -99,7 +99,7 @@ export function Installation() {
               
               <h3 className="text-lg font-semibold text-[--color-text] mb-4">That&apos;s it. Your AI now remembers.</h3>
               <div className="rounded-2xl overflow-hidden border border-[--color-surface1]/50 shadow-lg shadow-black/10">
-                <CodeBlock code={`engram serve\n# HTTP API on http://127.0.0.1:7437\n# MCP server ready for your agent`} language="bash" />
+                <CodeBlock code={`engram serve\n# HTTP API on http://127.0.0.1:7437\n# MCP server ready for your agent`} />
               </div>
             </div>
           </div>

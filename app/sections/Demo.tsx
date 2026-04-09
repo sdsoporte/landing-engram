@@ -63,7 +63,7 @@ export function Demo() {
                 </div>
                 <h3 className="text-xl font-semibold text-[--color-text]">Save memories</h3>
               </div>
-              <CodeBlock code={saveExample} language="javascript" />
+              <CodeBlock code={saveExample} />
             </div>
 
             <div className="space-y-4">
@@ -73,7 +73,7 @@ export function Demo() {
                 </div>
                 <h3 className="text-xl font-semibold text-[--color-text]">Search across all memories</h3>
               </div>
-              <CodeBlock code={searchExample} language="javascript" />
+              <CodeBlock code={searchExample} />
             </div>
 
             <div className="space-y-4">
@@ -83,7 +83,7 @@ export function Demo() {
                 </div>
                 <h3 className="text-xl font-semibold text-[--color-text]">Explore timeline context</h3>
               </div>
-              <CodeBlock code={timelineExample} language="javascript" />
+              <CodeBlock code={timelineExample} />
             </div>
           </div>
 

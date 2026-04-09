@@ -4,10 +4,6 @@ import { useEffect, useRef } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { neuralTargetMap, setNeuralTargetDistance } from '@/lib/neural-targets';
 
-interface NeuralNetworkProps {
-  className?: string;
-}
-
 interface Node {
   x: number;
   y: number;
@@ -54,7 +50,7 @@ function createGlowCanvas(color: string) {
   return c;
 }
 
-export function NeuralNetwork({ className }: NeuralNetworkProps) {
+export function NeuralNetwork() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const nodesRef = useRef<Node[]>([]);
@@ -380,7 +376,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
   return (
     <canvas
       ref={canvasRef}
-      className={className ? `${className} pointer-events-none` : 'pointer-events-none'}
+      className="pointer-events-none"
       style={{ display: 'block', width: '100%', height: '100%' }}
       aria-hidden="true"
     />

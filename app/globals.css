@@ -10,83 +10,24 @@
   /* Text colors */
   --color-text: #cdd6f4;
   --color-subtext0: #bac2de; /* Increased from #a6adc8 for better contrast */
-  --color-subtext1: #c9d1ec; /* Lighter for even better readability */
 
   /* Surface colors */
   --color-surface0: #313244;
   --color-surface1: #45475a;
   --color-surface2: #585b70;
 
-  /* Overlay colors */
-  --color-overlay0: #6c7086;
-  --color-overlay1: #7f849c;
-  --color-overlay2: #9399b2;
-
   /* Accent colors */
   --color-blue: #89b4fa;
   --color-lavender: #b4befe;
-  --color-sapphire: #74c7ec;
-  --color-sky: #89dceb;
-  --color-teal: #94e2d5;
   --color-green: #a6e3a1;
   --color-yellow: #f9e2af;
-  --color-peach: #fab387;
-  --color-maroon: #eba0ac;
   --color-red: #f38ba8;
   --color-mauve: #cba6f7;
   --color-pink: #f5c2e7;
-  --color-flamingo: #f2cdcd;
-  --color-rosewater: #f5e0dc;
 
   /* Typography */
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-
-  /* Spacing */
-  --section-padding: 6rem;
-  --container-max: 1280px;
-}
-
-@theme inline {
-  /* Background/base colors */
-  --color-background: var(--color-base);
-  --color-foreground: var(--color-text);
-  
-  /* Surface colors for cards, panels */
-  --color-surface-0: var(--color-surface0);
-  --color-surface-1: var(--color-surface1);
-  --color-surface-2: var(--color-surface2);
-  
-  /* Overlay colors */
-  --color-overlay-0: var(--color-overlay0);
-  --color-overlay-1: var(--color-overlay1);
-  
-  /* Text colors */
-  --color-text-primary: var(--color-text);
-  --color-text-secondary: var(--color-subtext0);
-  --color-text-tertiary: var(--color-subtext1);
-  
-  /* Base structural colors */
-  --color-base-bg: var(--color-base);
-  --color-mantle-bg: var(--color-mantle);
-  --color-crust-bg: var(--color-crust);
-  
-  /* Accent colors */
-  --color-mauve-accent: var(--color-mauve);
-  --color-pink-accent: var(--color-pink);
-  --color-blue-accent: var(--color-blue);
-  --color-green-accent: var(--color-green);
-  --color-red-accent: var(--color-red);
-  --color-peach-accent: var(--color-peach);
-  --color-lavender-accent: var(--color-lavender);
-  --color-yellow-accent: var(--color-yellow);
-  --color-teal-accent: var(--color-teal);
-  --color-sapphire-accent: var(--color-sapphire);
-  --color-sky-accent: var(--color-sky);
-  
-  /* Fonts */
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
 }
 
 body {
@@ -133,29 +74,4 @@ html {
   background: var(--color-surface2);
 }
 
-/* Utility classes for animations */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
 
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}

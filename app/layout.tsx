@@ -37,14 +37,6 @@ export const metadata: Metadata = {
       "A Go binary with SQLite + FTS5 full-text search. Agent-agnostic persistent memory system for AI coding agents.",
     url: "https://engram.land",
     siteName: "engram",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "engram — Persistent memory for AI agents",
-      },
-    ],
     locale: "en_US",
     type: "website",
   },
@@ -53,7 +45,6 @@ export const metadata: Metadata = {
     title: "engram — Persistent memory for AI agents",
     description:
       "A Go binary with SQLite + FTS5 full-text search. Agent-agnostic persistent memory system for AI coding agents.",
-    images: ["/og-image.png"],
   },
   robots: {
     index: true,

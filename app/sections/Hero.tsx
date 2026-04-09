@@ -15,7 +15,7 @@ interface HeroProps {
 function useProximityMotion(motionValue: ReturnType<typeof useNeuralTarget>[1], range: number) {
   const spring = useSpring(motionValue, { stiffness: 160, damping: 22 });
   const intensity = useTransform(spring, (d) => Math.max(0, 1 - d / range));
-  return { spring, intensity };
+  return intensity;
 }
 
 export function Hero({ stars, forks, version }: HeroProps) {
@@ -23,9 +23,9 @@ export function Hero({ stars, forks, version }: HeroProps) {
   const [titleRef, titleDistance] = useNeuralTarget<HTMLHeadingElement>('hero-title', 190);
   const [subtitleRef, subtitleDistance] = useNeuralTarget<HTMLDivElement>('hero-subtitle', 160);
 
-  const { intensity: badgeIntensity } = useProximityMotion(badgeDistance, 180);
-  const { intensity: titleIntensity } = useProximityMotion(titleDistance, 220);
-  const { intensity: subtitleIntensity } = useProximityMotion(subtitleDistance, 180);
+  const badgeIntensity = useProximityMotion(badgeDistance, 180);
+  const titleIntensity = useProximityMotion(titleDistance, 220);
+  const subtitleIntensity = useProximityMotion(subtitleDistance, 180);
 
   const badgeScale = useTransform(badgeIntensity, (i) => 1 - i * 0.15);
   const badgeY = useTransform(badgeIntensity, (i) => -i * 28);

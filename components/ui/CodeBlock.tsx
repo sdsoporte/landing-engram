@@ -6,12 +6,11 @@ import { Check, Copy } from 'lucide-react';
 
 interface CodeBlockProps {
   code: string;
-  language?: string;
   filename?: string;
   className?: string;
 }
 
-export function CodeBlock({ code, language = 'bash', filename, className }: CodeBlockProps) {
+export function CodeBlock({ code, filename, className }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   // Cleanup timeout on unmount to prevent memory leak
@@ -59,7 +58,7 @@ export function CodeBlock({ code, language = 'bash', filename, className }: Code
       )}
       <div className="relative bg-[--color-crust] p-4 overflow-x-auto">
         <pre className="text-sm text-[--color-text] font-mono">
-          <code className={`language-${language}`}>{code}</code>
+          <code>{code}</code>
         </pre>
         <button
           onClick={handleCopy}
