@@ -34,9 +34,9 @@ const NODE_COLORS = [
   COLORS.pink,
 ];
 
-const CONNECTION_COLOR_RGB = '147, 153, 178'; // text color - más visible
+const CONNECTION_COLOR_RGB = '147, 153, 178';
 const MAX_CONNECTIONS_PER_NODE = 3;
-const MAIN_NODE_CHANCE = 0.25; // 25% principales
+const MAIN_NODE_CHANCE = 0.25;
 
 export function NeuralNetwork({ className }: NeuralNetworkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,6 +48,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     if (width === 0 || height === 0) return;
 
     nodesRef.current = [];
+    const nodes: Node[] = [];
 
     // Más nodos y MUCHO más grandes
     const nodeCount = Math.max(40, Math.min(55, Math.floor((width * height) / 12000)));
@@ -62,7 +63,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         y,
         vx: (Math.random() - 0.5) * 0.04,
         vy: (Math.random() - 0.5) * 0.04,
-        // NODOS MUCHO MÁS GRANDES: antes 2.5-3.5, ahora 5-8px
+        // NODOS MUCHO MÁS GRANDES: 4-8px
         radius: isMain ? Math.random() * 3 + 5 : Math.random() * 2 + 4,
         color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
         pulse: Math.random() * Math.PI * 2,
@@ -97,7 +98,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
           ctx.moveTo(nodes[i].x, nodes[i].y);
           ctx.lineTo(nodes[j].x, nodes[j].y);
           ctx.strokeStyle = `rgba(${CONNECTION_COLOR_RGB}, ${opacity})`;
-          ctx.lineWidth = 1.2; // Líneas más gruesas
+          ctx.lineWidth = 1.2;
           ctx.stroke();
           connectionCount++;
         }
@@ -118,16 +119,16 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
           0,
           node.x,
           node.y,
-          node.radius * 5 * pulseScale // Aumentado de 3.5 a 5
+          node.radius * 5 * pulseScale
         );
         gradient.addColorStop(0, node.color);
-        gradient.addColorStop(0.3, node.color + '90'); // Más opaco
+        gradient.addColorStop(0.3, node.color + '90');
         gradient.addColorStop(1, 'transparent');
 
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius * 5 * pulseScale, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
-        ctx.globalAlpha = 0.6; // Más visible
+        ctx.globalAlpha = 0.6;
         ctx.fill();
         ctx.globalAlpha = 1;
       }
@@ -136,7 +137,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.radius * pulseScale, 0, Math.PI * 2);
       ctx.fillStyle = node.color;
-      ctx.globalAlpha = node.isMain ? 0.95 : 0.85; // Mucho más opaco
+      ctx.globalAlpha = node.isMain ? 0.95 : 0.85;
       ctx.fill();
       ctx.globalAlpha = 1;
 
