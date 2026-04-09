@@ -142,13 +142,13 @@ export function Solution() {
                   borderColorClass="border-[--color-blue]/20 hover:border-[--color-blue]/40"
                   bgGradientClass="bg-gradient-to-r from-[--color-blue]/10 to-transparent"
                   iconBgClass="bg-[--color-blue]/20"
-                  shadowClass="shadow-[0_0_15px_-3px_var(--color-blue)]/30"
+                  shadowClass="shadow-[0_0_15px_-3px_#89b4fa]/30"
                 />
 
                 {/* Connection line */}
                 <div className="flex justify-center py-1">
                   <div className="relative w-px h-6 bg-gradient-to-b from-[--color-blue] to-[--color-mauve]">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[--color-mauve] animate-pulse shadow-[0_0_8px_var(--color-mauve)]" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[--color-mauve] animate-pulse shadow-[0_0_8px_#cba6f7]" />
                   </div>
                 </div>
 
@@ -162,8 +162,8 @@ export function Solution() {
                   borderColorClass="border-[--color-mauve]/40"
                   bgGradientClass="bg-gradient-to-r from-[--color-mauve]/20 to-[--color-mauve]/5"
                   iconBgClass="bg-[--color-mauve]/30"
-                  shadowClass="shadow-[0_0_20px_-3px_var(--color-mauve)]/50"
-                  hoverShadowClass="hover:shadow-[0_0_40px_-8px_var(--color-mauve)]/40"
+                  shadowClass="shadow-[0_0_20px_-3px_#cba6f7]/50"
+                  hoverShadowClass="hover:shadow-[0_0_40px_-8px_#cba6f7]/40"
                   isCenter
                 />
 
@@ -171,7 +171,7 @@ export function Solution() {
                 <div className="flex justify-center py-1">
                   <div className="relative w-px h-6 bg-gradient-to-b from-[--color-mauve] to-[--color-green]">
                     <div
-                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[--color-green] animate-pulse shadow-[0_0_8px_var(--color-green)]"
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[--color-green] animate-pulse shadow-[0_0_8px_#a6e3a1]"
                       style={{ animationDelay: '0.5s' }}
                     />
                   </div>
@@ -187,7 +187,7 @@ export function Solution() {
                   borderColorClass="border-[--color-green]/20 hover:border-[--color-green]/40"
                   bgGradientClass="bg-gradient-to-r from-[--color-green]/10 to-transparent"
                   iconBgClass="bg-[--color-green]/20"
-                  shadowClass="shadow-[0_0_15px_-3px_var(--color-green)]/30"
+                  shadowClass="shadow-[0_0_15px_-3px_#a6e3a1]/30"
                 />
               </div>
             </motion.div>

@@ -48,7 +48,7 @@ function ProblemCard({ problem }: { problem: typeof problems[0] }) {
       className="group relative flex items-start gap-4 p-6 rounded-3xl bg-gradient-to-br from-[--color-crust] to-[--color-mantle] border border-[--color-red]/20 hover:border-[--color-red]/50 transition-all duration-300 will-change-transform"
     >
       {/* Icon node */}
-      <div className="relative z-10 flex-shrink-0 w-14 h-14 rounded-2xl bg-[--color-red]/10 border border-[--color-red]/20 flex items-center justify-center text-[--color-red] group-hover:shadow-[0_0_20px_-2px_var(--color-red)]/30 transition-all duration-300">
+        <div className="relative z-10 flex-shrink-0 w-14 h-14 rounded-2xl bg-[--color-red]/10 border border-[--color-red]/20 flex items-center justify-center text-[--color-red] group-hover:shadow-[0_0_20px_-2px_#f38ba8]/30 transition-all duration-300">
         {problem.icon}
       </div>
       <div className="relative z-10 flex-1">

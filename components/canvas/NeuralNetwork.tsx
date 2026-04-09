@@ -58,7 +58,7 @@ export function NeuralNetwork() {
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const lastSizeRef = useRef<{ width: number; height: number } | null>(null);
   const isRunningRef = useRef(true);
-  const lastTimeRef = useRef<number>(performance.now());
+  const lastTimeRef = useRef<number>(0);
   const glowCacheRef = useRef<Map<string, HTMLCanvasElement>>(new Map());
   const reducedMotion = useReducedMotion();
 
@@ -346,6 +346,7 @@ export function NeuralNetwork() {
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     if (!reducedMotion) {
+      lastTimeRef.current = performance.now();
       animate();
     } else {
       const ctx = canvas.getContext('2d', { alpha: true });

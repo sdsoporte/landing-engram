@@ -33,10 +33,10 @@ export function Installation() {
             {/* Step 1 */}
             <div className="relative pl-0 sm:pl-12 pb-10">
               {/* Node indicator */}
-              <div className="hidden sm:flex absolute left-0 top-0 w-8 h-8 rounded-full bg-[--color-mauve] items-center justify-center text-[--color-base] font-bold text-sm shadow-[0_0_15px_var(--color-mauve)]/50">
+              <div className="hidden sm:flex absolute left-0 top-0 w-8 h-8 rounded-full bg-[--color-mauve] items-center justify-center text-[--color-base] font-bold text-sm shadow-[0_0_15px_#cba6f7]/50">
                 1
               </div>
-              <div className="sm:hidden w-8 h-8 rounded-full bg-[--color-mauve] flex items-center justify-center text-[--color-base] font-bold text-sm mb-4 shadow-[0_0_15px_var(--color-mauve)]/50">
+              <div className="sm:hidden w-8 h-8 rounded-full bg-[--color-mauve] flex items-center justify-center text-[--color-base] font-bold text-sm mb-4 shadow-[0_0_15px_#cba6f7]/50">
                 1
               </div>
               
@@ -59,10 +59,10 @@ export function Installation() {
 
             {/* Step 2 */}
             <div className="relative pl-0 sm:pl-12 pb-10">
-              <div className="hidden sm:flex absolute left-0 top-0 w-8 h-8 rounded-full bg-[--color-mauve] items-center justify-center text-[--color-base] font-bold text-sm shadow-[0_0_15px_var(--color-mauve)]/50">
+              <div className="hidden sm:flex absolute left-0 top-0 w-8 h-8 rounded-full bg-[--color-mauve] items-center justify-center text-[--color-base] font-bold text-sm shadow-[0_0_15px_#cba6f7]/50">
                 2
               </div>
-              <div className="sm:hidden w-8 h-8 rounded-full bg-[--color-mauve] flex items-center justify-center text-[--color-base] font-bold text-sm mb-4 shadow-[0_0_15px_var(--color-mauve)]/50">
+              <div className="sm:hidden w-8 h-8 rounded-full bg-[--color-mauve] flex items-center justify-center text-[--color-base] font-bold text-sm mb-4 shadow-[0_0_15px_#cba6f7]/50">
                 2
               </div>
               
@@ -90,10 +90,10 @@ export function Installation() {
 
             {/* Step 3 */}
             <div className="relative pl-0 sm:pl-12">
-              <div className="hidden sm:flex absolute left-0 top-0 w-8 h-8 rounded-full bg-[--color-green] items-center justify-center text-[--color-base] font-bold text-sm shadow-[0_0_15px_var(--color-green)]/50">
+              <div className="hidden sm:flex absolute left-0 top-0 w-8 h-8 rounded-full bg-[--color-green] items-center justify-center text-[--color-base] font-bold text-sm shadow-[0_0_15px_#a6e3a1]/50">
                 ✓
               </div>
-              <div className="sm:hidden w-8 h-8 rounded-full bg-[--color-green] flex items-center justify-center text-[--color-base] font-bold text-sm mb-4 shadow-[0_0_15px_var(--color-green)]/50">
+              <div className="sm:hidden w-8 h-8 rounded-full bg-[--color-green] flex items-center justify-center text-[--color-base] font-bold text-sm mb-4 shadow-[0_0_15px_#a6e3a1]/50">
                 ✓
               </div>
               
@@ -109,15 +109,15 @@ export function Installation() {
             <h4 className="font-semibold text-[--color-text] mb-4">Requirements</h4>
             <ul className="space-y-3 text-[--color-subtext0] text-sm">
               <li className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-[--color-green] shadow-[0_0_8px_var(--color-green)]" />
+                <div className="w-2 h-2 rounded-full bg-[--color-green] shadow-[0_0_8px_#a6e3a1]" />
                 Go 1.21 or later
               </li>
               <li className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-[--color-green] shadow-[0_0_8px_var(--color-green)]" />
+                <div className="w-2 h-2 rounded-full bg-[--color-green] shadow-[0_0_8px_#a6e3a1]" />
                 SQLite (embedded — no installation needed)
               </li>
               <li className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-[--color-green] shadow-[0_0_8px_var(--color-green)]" />
+                <div className="w-2 h-2 rounded-full bg-[--color-green] shadow-[0_0_8px_#a6e3a1]" />
                 Any MCP-compatible AI agent
               </li>
             </ul>

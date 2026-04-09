@@ -18,7 +18,7 @@ export function Card({ icon, title, description, className }: CardProps) {
         'p-8',
         // Glow border that feels like a neural connection
         'border border-[--color-surface1]',
-        'hover:border-[--color-mauve]/50 hover:shadow-[0_0_30px_-5px_var(--color-mauve)]/20',
+        'hover:border-[--color-mauve]/50 hover:shadow-[0_0_30px_-5px_#cba6f7]/20',
         // Subtle lift
         'hover:-translate-y-1',
         'transition-all duration-300',
@@ -32,7 +32,7 @@ export function Card({ icon, title, description, className }: CardProps) {
         border border-[--color-surface2]/30
         flex items-center justify-center
         text-[--color-mauve]
-        group-hover:shadow-[0_0_20px_-2px_var(--color-mauve)]/30
+        group-hover:shadow-[0_0_20px_-2px_#cba6f7]/30
         group-hover:border-[--color-mauve]/40
         transition-all duration-300
       ">

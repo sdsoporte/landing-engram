@@ -1,5 +1,3 @@
-'use client';
-
 import { Container } from '@/components/layout/Container';
 import { Section } from '@/components/layout/Section';
 import { CodeBlock } from '@/components/ui/CodeBlock';
