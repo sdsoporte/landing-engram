@@ -56,8 +56,8 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
       nodes.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 1.4,
-        vy: (Math.random() - 0.5) * 1.4,
+        vx: (Math.random() - 0.5) * 1.0,
+        vy: (Math.random() - 0.5) * 1.0,
         radius: isMain ? Math.random() * 4 + 7 : Math.random() * 3 + 4,
         color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
         pulse: Math.random() * Math.PI * 2,
@@ -139,32 +139,62 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
 
   function update(width: number, height: number) {
     const nodes = nodesRef.current;
+    const targets = getNeuralTargets();
 
     for (const node of nodes) {
+      // Fuerza de repulsión de los targets (DOM elements)
+      let fx = 0;
+      let fy = 0;
+
+      for (const target of targets) {
+        const dx = node.x - target.x;
+        const dy = node.y - target.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < target.range && dist > 0.1) {
+          const force = (1 - dist / target.range) * 2.8; // fuerza max ~2.8
+          fx += (dx / dist) * force;
+          fy += (dy / dist) * force;
+        }
+      }
+
+      node.vx += fx * 0.12;
+      node.vy += fy * 0.12;
+
+      // Amortiguación suave para no acelerar indefinidamente
+      node.vx *= 0.985;
+      node.vy *= 0.985;
+
+      // Velocidad mínima para mantener vida
+      const speed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
+      if (speed < 0.25) {
+        node.vx *= 1.02;
+        node.vy *= 1.02;
+      }
+
       node.x += node.vx;
       node.y += node.vy;
 
       const padding = 20;
       if (node.x < padding) {
-        node.vx = Math.abs(node.vx);
+        node.vx = Math.abs(node.vx) * 0.9 + 0.2;
         node.x = padding;
       }
       if (node.x > width - padding) {
-        node.vx = -Math.abs(node.vx);
+        node.vx = -Math.abs(node.vx) * 0.9 - 0.2;
         node.x = width - padding;
       }
       if (node.y < padding) {
-        node.vy = Math.abs(node.vy);
+        node.vy = Math.abs(node.vy) * 0.9 + 0.2;
         node.y = padding;
       }
       if (node.y > height - padding) {
-        node.vy = -Math.abs(node.vy);
+        node.vy = -Math.abs(node.vy) * 0.9 - 0.2;
         node.y = height - padding;
       }
     }
 
     // Actualizar distancias de targets (sin React re-renders)
-    const targets = getNeuralTargets();
     for (const target of targets) {
       let closest = Infinity;
       for (const node of nodes) {
