@@ -70,7 +70,7 @@ export function Hero({ stars, forks, version }: HeroProps) {
               opacity: titleOpacity,
               letterSpacing: titleSpacing,
             }}
-            className="relative z-10 mb-6 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight bg-clip-text text-transparent will-change-transform"
+            className="relative z-10 mb-6 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight bg-clip-text text-transparent will-change-transform pb-2 leading-[1.1]"
           >
             Engram
           </motion.h1>

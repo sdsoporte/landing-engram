@@ -30,7 +30,7 @@ const problems = [
 ];
 
 function ProblemCard({ problem }: { problem: typeof problems[0] }) {
-  const [ref, distance] = useNeuralTarget(`problem-${problem.title}`, 240);
+  const [ref, distance] = useNeuralTarget(`problem-${problem.title}`, 280);
   const spring = useSpring(distance, { stiffness: 180, damping: 24 });
   const intensity = useTransform(spring, (d) => Math.max(0, 1 - d / 160));
 

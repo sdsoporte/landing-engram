@@ -157,18 +157,18 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < target.range && dist > 0.1) {
-          const force = (1 - dist / target.range) * 4.2; // fuerza max ~4.2
+          const force = (1 - dist / target.range) * 5.5; // fuerza max ~5.5
           fx += (dx / dist) * force;
           fy += (dy / dist) * force;
         }
       }
 
-      node.vx += fx * 0.15;
-      node.vy += fy * 0.15;
+      node.vx += fx * 0.18;
+      node.vy += fy * 0.18;
 
       // Amortiguación suave para no acelerar indefinidamente
-      node.vx *= 0.988;
-      node.vy *= 0.988;
+      node.vx *= 0.992;
+      node.vy *= 0.992;
 
       // Velocidad mínima para mantener vida
       const speed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);

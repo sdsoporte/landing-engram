@@ -66,10 +66,19 @@ function SolutionNode({
 
 export function Solution() {
   const [headlineRef, headlineDistance] = useNeuralTarget('solution-headline', 180);
-  const spring = useSpring(headlineDistance, { stiffness: 160, damping: 22 });
-  const intensity = useTransform(spring, (d) => Math.max(0, 1 - d / 180));
-  const headlineScale = useTransform(intensity, (i) => 1 - i * 0.05);
-  const headlineY = useTransform(intensity, (i) => -i * 12);
+  const headlineSpring = useSpring(headlineDistance, { stiffness: 160, damping: 22 });
+  const headlineIntensity = useTransform(headlineSpring, (d) => Math.max(0, 1 - d / 180));
+  const headlineScale = useTransform(headlineIntensity, (i) => 1 - i * 0.05);
+  const headlineY = useTransform(headlineIntensity, (i) => -i * 12);
+
+  const [diagramRef, diagramDistance] = useNeuralTarget('solution-diagram', 280);
+  const diagramSpring = useSpring(diagramDistance, { stiffness: 160, damping: 22 });
+  const diagramIntensity = useTransform(diagramSpring, (d) => Math.max(0, 1 - d / 280));
+  const diagramScale = useTransform(diagramIntensity, (i) => 1 + i * 0.02);
+  const diagramBoxShadow = useTransform(diagramIntensity, (i) => {
+    const alpha = 0.05 + i * 0.3;
+    return `0 0 ${25 + i * 20}px -5px rgba(180, 190, 254, ${alpha})`;
+  });
 
   return (
     <Section id="solution">
@@ -117,7 +126,11 @@ export function Solution() {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-br from-[--color-mauve]/5 to-[--color-blue]/5 rounded-[2rem] blur-3xl" />
 
-            <div className="relative bg-gradient-to-br from-[--color-surface0]/80 to-[--color-crust]/80 rounded-[2rem] p-8 border border-[--color-surface1]/50 backdrop-blur-sm">
+            <motion.div
+              ref={diagramRef as React.RefObject<HTMLDivElement>}
+              style={{ scale: diagramScale, boxShadow: diagramBoxShadow }}
+              className="relative bg-gradient-to-br from-[--color-surface0]/80 to-[--color-crust]/80 rounded-[2rem] p-8 border border-[--color-surface1]/50 backdrop-blur-sm will-change-transform"
+            >
               <div className="space-y-4">
                 {/* Agent Node */}
                 <SolutionNode
@@ -177,7 +190,7 @@ export function Solution() {
                   shadowClass="shadow-[0_0_15px_-3px_var(--color-green)]/30"
                 />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </Container>
