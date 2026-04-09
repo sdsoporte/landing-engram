@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Container } from '@/components/layout/Container';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight, Star, GitFork } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useNeuralWave } from '@/app/context/NeuralWaveContext';
+import { motion, useSpring, useTransform, useMotionValue } from 'framer-motion';
 import { prepareWithSegments, measureNaturalWidth } from '@chenglou/pretext';
+import { waveXMotion } from '@/lib/wave-motion';
 
 interface HeroProps {
   stars: string;
@@ -15,24 +15,26 @@ interface HeroProps {
 }
 
 export function Hero({ stars, forks, version }: HeroProps) {
-  const { waveX, viewportWidth } = useNeuralWave();
   const titleRef = useRef<HTMLHeadingElement>(null);
   const badgeRef = useRef<HTMLDivElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
 
-  const [titleWidth, setTitleWidth] = useState(0);
-  const [subtitleWidth, setSubtitleWidth] = useState(0);
-  const [badgeWidth, setBadgeWidth] = useState(0);
+  const titleRangeRef = useRef(260);
+  const badgeRangeRef = useRef(200);
 
-  // Medir texto con pretext
+  const springX = useSpring(waveXMotion, { stiffness: 300, damping: 28 });
+  const centerXValue = useMotionValue(0);
+  const waveDirectionValue = useMotionValue(1);
+
+  // Medir texto con pretext y calcular rangos de reacción exactos
   useEffect(() => {
-    function measureElements() {
+    function measure() {
       if (titleRef.current) {
         const style = window.getComputedStyle(titleRef.current);
         const fontFamily = style.fontFamily.split(',')[0].replace(/["']/g, '');
         const font = `${style.fontWeight} ${style.fontSize} ${fontFamily}`;
         const prepared = prepareWithSegments('Engram', font);
-        setTitleWidth(measureNaturalWidth(prepared));
+        const w = measureNaturalWidth(prepared);
+        titleRangeRef.current = w / 2 + 160;
       }
       if (badgeRef.current) {
         const style = window.getComputedStyle(badgeRef.current);
@@ -40,54 +42,115 @@ export function Hero({ stars, forks, version }: HeroProps) {
         const font = `${style.fontWeight} ${style.fontSize} ${fontFamily}`;
         const text = badgeRef.current.innerText || '';
         const prepared = prepareWithSegments(text, font);
-        setBadgeWidth(measureNaturalWidth(prepared));
-      }
-      if (subtitleRef.current) {
-        const style = window.getComputedStyle(subtitleRef.current);
-        const fontFamily = style.fontFamily.split(',')[0].replace(/["']/g, '');
-        const font = `${style.fontWeight} ${style.fontSize} ${fontFamily}`;
-        const text = subtitleRef.current.innerText || '';
-        const prepared = prepareWithSegments(text, font);
-        setSubtitleWidth(measureNaturalWidth(prepared));
+        const w = measureNaturalWidth(prepared);
+        badgeRangeRef.current = w / 2 + 120;
       }
     }
 
-    measureElements();
-    window.addEventListener('resize', measureElements);
-    return () => window.removeEventListener('resize', measureElements);
-  }, []);
+    measure();
+    const handleResize = () => {
+      centerXValue.set(window.innerWidth / 2);
+      measure();
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [centerXValue]);
 
-  // Calcular intensidad de reacción de la wave
-  const centerX = viewportWidth / 2;
-  const titleReactionRange = titleWidth / 2 + 180;
-  const titleDistance = Math.abs(waveX - centerX);
-  const titleIntensity = Math.max(0, 1 - titleDistance / titleReactionRange);
+  // Actualizar dirección de la wave para saber hacia dónde empujar el badge
+  useEffect(() => {
+    const unsubscribe = waveXMotion.on('change', (x) => {
+      const center = centerXValue.get();
+      waveDirectionValue.set(x < center ? -1 : 1);
+    });
+    return unsubscribe;
+  }, [centerXValue, waveDirectionValue]);
 
-  const badgeReactionRange = badgeWidth / 2 + 140;
-  const badgeDistance = Math.abs(waveX - centerX);
-  const badgeIntensity = Math.max(0, 1 - badgeDistance / badgeReactionRange);
+  const titleScale = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
+    return 1 - intensity * 0.14;
+  });
 
-  // Dirección de la wave para saber hacia dónde empujar
-  const waveDirection = waveX < centerX ? -1 : 1;
+  const titleY = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
+    return -intensity * 28;
+  });
+
+  const titleOpacity = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
+    return 1 - intensity * 0.4;
+  });
+
+  const titleSpacing = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
+    return `${intensity * 0.1}em`;
+  });
+
+  const badgeScale = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / badgeRangeRef.current);
+    return 1 - intensity * 0.18;
+  });
+
+  const badgeX = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / badgeRangeRef.current);
+    return intensity * waveDirectionValue.get() * 60;
+  });
+
+  const badgeY = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / badgeRangeRef.current);
+    return -intensity * 18;
+  });
+
+  const badgeOpacity = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / badgeRangeRef.current);
+    return 1 - intensity * 0.35;
+  });
+
+  const subtitleY = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
+    return -intensity * 14;
+  });
+
+  const subtitleOpacity = useTransform(springX, (x) => {
+    const center = centerXValue.get();
+    const dist = Math.abs(x - center);
+    const intensity = Math.max(0, 1 - dist / titleRangeRef.current);
+    return 1 - intensity * 0.28;
+  });
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Overlay para legibilidad sobre neural global */}
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-[--color-base]/60 via-[--color-base]/40 to-[--color-base]/60" />
 
       <Container className="relative z-10 text-center">
         <div className="max-w-4xl mx-auto">
-          
-          {/* Badge etimológico / MIMO provisional */}
+          {/* Badge etimológico */}
           <motion.div
             ref={badgeRef}
-            animate={{
-              scale: 1 - badgeIntensity * 0.15,
-              x: badgeIntensity * waveDirection * 50,
-              y: -badgeIntensity * 15,
-              opacity: 1 - badgeIntensity * 0.3,
+            style={{
+              scale: badgeScale,
+              x: badgeX,
+              y: badgeY,
+              opacity: badgeOpacity,
             }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className="mb-6 inline-flex flex-col sm:flex-row items-center gap-2 px-5 py-2.5 rounded-full bg-[--color-surface0]/70 border border-[--color-mauve]/25 backdrop-blur-sm will-change-transform"
           >
             <span className="text-sm font-mono font-semibold text-[--color-mauve]">engram</span>
@@ -95,34 +158,27 @@ export function Hero({ stars, forks, version }: HeroProps) {
             <span className="text-sm text-[--color-subtext0] italic">/ˈen.ɡræm/ — the physical trace of memory</span>
           </motion.div>
 
-          {/* Título principal — reacciona a la wave */}
+          {/* Título principal */}
           <motion.h1
             ref={titleRef}
-            animate={{
-              scale: 1 - titleIntensity * 0.12,
-              y: -titleIntensity * 25,
-              opacity: 1 - titleIntensity * 0.35,
-              letterSpacing: `${titleIntensity * 0.08}em`,
-            }}
-            transition={{ type: 'spring', stiffness: 280, damping: 22 }}
-            className="mb-6 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight bg-clip-text text-transparent will-change-transform"
             style={{
               backgroundImage: 'linear-gradient(to right, var(--color-mauve), var(--color-pink), var(--color-blue))',
+              scale: titleScale,
+              y: titleY,
+              opacity: titleOpacity,
+              letterSpacing: titleSpacing,
             }}
+            className="mb-6 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight bg-clip-text text-transparent will-change-transform"
           >
             Engram
           </motion.h1>
 
-          {/* Hook emocional — reacción sutil */}
+          {/* Hook emocional */}
           <motion.div
-            animate={{
-              y: -titleIntensity * 12,
-              opacity: 1 - titleIntensity * 0.25,
-            }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            style={{ y: subtitleY, opacity: subtitleOpacity }}
             className="mb-8 space-y-3 will-change-transform"
           >
-            <p ref={subtitleRef} className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[--color-text]">
+            <p className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[--color-text]">
               Your AI forgets everything.{' '}
               <span className="text-[--color-mauve]">We give it a brain.</span>
             </p>
@@ -153,7 +209,7 @@ export function Hero({ stars, forks, version }: HeroProps) {
             </Button>
           </div>
 
-          {/* GitHub stats - AHORA DINÁMICOS */}
+          {/* GitHub stats */}
           <div className="flex flex-wrap justify-center gap-5 text-[--color-subtext0] text-sm">
             <div className="flex items-center gap-1.5">
               <Star className="w-4 h-4 text-[--color-yellow]" />
