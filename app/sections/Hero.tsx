@@ -19,9 +19,9 @@ function useProximityMotion(motionValue: ReturnType<typeof useNeuralTarget>[1], 
 }
 
 export function Hero({ stars, forks, version }: HeroProps) {
-  const [badgeRef, badgeDistance] = useNeuralTarget('hero-badge', 180);
-  const [titleRef, titleDistance] = useNeuralTarget('hero-title', 220);
-  const [subtitleRef, subtitleDistance] = useNeuralTarget('hero-subtitle', 180);
+  const [badgeRef, badgeDistance] = useNeuralTarget('hero-badge', 160);
+  const [titleRef, titleDistance] = useNeuralTarget('hero-title', 190);
+  const [subtitleRef, subtitleDistance] = useNeuralTarget('hero-subtitle', 160);
 
   const { intensity: badgeIntensity } = useProximityMotion(badgeDistance, 180);
   const { intensity: titleIntensity } = useProximityMotion(titleDistance, 220);

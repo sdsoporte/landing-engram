@@ -30,7 +30,7 @@ const problems = [
 ];
 
 function ProblemCard({ problem }: { problem: typeof problems[0] }) {
-  const [ref, distance] = useNeuralTarget(`problem-${problem.title}`, 160);
+  const [ref, distance] = useNeuralTarget(`problem-${problem.title}`, 240);
   const spring = useSpring(distance, { stiffness: 180, damping: 24 });
   const intensity = useTransform(spring, (d) => Math.max(0, 1 - d / 160));
 
@@ -65,10 +65,20 @@ function ProblemCard({ problem }: { problem: typeof problems[0] }) {
 }
 
 export function Problem() {
+  const [headlineRef, headlineDistance] = useNeuralTarget('problem-headline', 200);
+  const spring = useSpring(headlineDistance, { stiffness: 160, damping: 22 });
+  const intensity = useTransform(spring, (d) => Math.max(0, 1 - d / 200));
+  const headlineScale = useTransform(intensity, (i) => 1 - i * 0.06);
+  const headlineY = useTransform(intensity, (i) => -i * 14);
+
   return (
     <Section id="problem" variant="muted">
       <Container>
-        <div className="max-w-3xl mx-auto text-center mb-12">
+        <motion.div
+          ref={headlineRef as React.RefObject<HTMLDivElement>}
+          style={{ scale: headlineScale, y: headlineY }}
+          className="max-w-3xl mx-auto text-center mb-12 will-change-transform"
+        >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[--color-text] mb-4">
             Your AI forgets{' '}
             <span className="text-[--color-red]">everything</span>
@@ -76,7 +86,7 @@ export function Problem() {
           <p className="text-lg text-[--color-subtext0]">
             When the session ends, it all disappears. Decisions, patterns, discussions — gone.
           </p>
-        </div>
+        </motion.div>
 
         {/* Problem nodes — organic, rounded, with glow */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">

@@ -32,7 +32,7 @@ function SolutionNode({
   hoverShadowClass?: string;
   isCenter?: boolean;
 }) {
-  const [ref, distance] = useNeuralTarget(`solution-${id}`, 180);
+  const [ref, distance] = useNeuralTarget(`solution-${id}`, 260);
   const spring = useSpring(distance, { stiffness: 180, damping: 24 });
   const intensity = useTransform(spring, (d) => Math.max(0, 1 - d / 180));
 
@@ -65,12 +65,22 @@ function SolutionNode({
 }
 
 export function Solution() {
+  const [headlineRef, headlineDistance] = useNeuralTarget('solution-headline', 180);
+  const spring = useSpring(headlineDistance, { stiffness: 160, damping: 22 });
+  const intensity = useTransform(spring, (d) => Math.max(0, 1 - d / 180));
+  const headlineScale = useTransform(intensity, (i) => 1 - i * 0.05);
+  const headlineY = useTransform(intensity, (i) => -i * 12);
+
   return (
     <Section id="solution">
       <Container>
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left: Text content */}
-          <div className="space-y-6">
+          <motion.div
+            ref={headlineRef as React.RefObject<HTMLDivElement>}
+            style={{ scale: headlineScale, y: headlineY }}
+            className="space-y-6 will-change-transform"
+          >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[--color-text]">
               engram connects{' '}
               <span className="text-[--color-mauve]">your memories</span>
@@ -101,7 +111,7 @@ export function Solution() {
               Explore Features
               <ArrowRight className="w-5 h-5" />
             </Button>
-          </div>
+          </motion.div>
 
           {/* Right: Neural flow diagram */}
           <div className="relative">

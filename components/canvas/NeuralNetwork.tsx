@@ -48,17 +48,21 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
   function initNodes(width: number, height: number) {
     if (width === 0 || height === 0) return;
 
+    const isMobile = width < 768;
     const nodes: Node[] = [];
-    const nodeCount = Math.max(85, Math.min(110, Math.floor((width * height) / 9000)));
+    const baseDensity = isMobile ? 12000 : 8500;
+    const maxNodes = isMobile ? 70 : 130;
+    const minNodes = isMobile ? 45 : 100;
+    const nodeCount = Math.max(minNodes, Math.min(maxNodes, Math.floor((width * height) / baseDensity)));
 
     for (let i = 0; i < nodeCount; i++) {
       const isMain = Math.random() < MAIN_NODE_CHANCE;
       nodes.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 1.0,
-        vy: (Math.random() - 0.5) * 1.0,
-        radius: isMain ? Math.random() * 4 + 7 : Math.random() * 3 + 4,
+        vx: (Math.random() - 0.5) * 1.3,
+        vy: (Math.random() - 0.5) * 1.3,
+        radius: isMain ? Math.random() * (isMobile ? 3 : 4) + (isMobile ? 5 : 7) : Math.random() * (isMobile ? 2.5 : 3) + (isMobile ? 3 : 4),
         color: NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
         pulse: Math.random() * Math.PI * 2,
         pulseSpeed: 0.06 + Math.random() * 0.04,
@@ -71,7 +75,8 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
 
   function draw(ctx: CanvasRenderingContext2D, width: number, height: number) {
     const nodes = nodesRef.current;
-    const connectionDistance = Math.min(width, height) * 0.16;
+    const isMobile = Math.min(width, height) < 768;
+    const connectionDistance = Math.min(width, height) * (isMobile ? 0.14 : 0.16);
 
     ctx.clearRect(0, 0, width, height);
 
@@ -152,18 +157,18 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < target.range && dist > 0.1) {
-          const force = (1 - dist / target.range) * 2.8; // fuerza max ~2.8
+          const force = (1 - dist / target.range) * 4.2; // fuerza max ~4.2
           fx += (dx / dist) * force;
           fy += (dy / dist) * force;
         }
       }
 
-      node.vx += fx * 0.12;
-      node.vy += fy * 0.12;
+      node.vx += fx * 0.15;
+      node.vy += fy * 0.15;
 
       // Amortiguación suave para no acelerar indefinidamente
-      node.vx *= 0.985;
-      node.vy *= 0.985;
+      node.vx *= 0.988;
+      node.vy *= 0.988;
 
       // Velocidad mínima para mantener vida
       const speed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
@@ -175,7 +180,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
       node.x += node.vx;
       node.y += node.vy;
 
-      const padding = 20;
+      const padding = Math.min(width, height) < 768 ? 12 : 20;
       if (node.x < padding) {
         node.vx = Math.abs(node.vx) * 0.9 + 0.2;
         node.x = padding;
