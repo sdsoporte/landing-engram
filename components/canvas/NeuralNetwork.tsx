@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { getNeuralTargets, setNeuralTargetDistance } from '@/lib/neural-targets';
+import { neuralTargetMap, setNeuralTargetDistance } from '@/lib/neural-targets';
 
 interface NeuralNetworkProps {
   className?: string;
@@ -39,6 +39,21 @@ const CONNECTION_COLOR_RGB = '180, 190, 220';
 const MAX_CONNECTIONS_PER_NODE = 4;
 const MAIN_NODE_CHANCE = 0.3;
 
+function createGlowCanvas(color: string) {
+  const size = 128;
+  const c = document.createElement('canvas');
+  c.width = size;
+  c.height = size;
+  const gCtx = c.getContext('2d')!;
+  const grad = gCtx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0, color + '80');
+  grad.addColorStop(0.4, color + '30');
+  grad.addColorStop(1, 'transparent');
+  gCtx.fillStyle = grad;
+  gCtx.fillRect(0, 0, size, size);
+  return c;
+}
+
 export function NeuralNetwork({ className }: NeuralNetworkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -46,7 +61,20 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
   const animationRef = useRef<number | null>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const lastSizeRef = useRef<{ width: number; height: number } | null>(null);
+  const isRunningRef = useRef(true);
+  const lastTimeRef = useRef<number>(performance.now());
+  const glowCacheRef = useRef<Map<string, HTMLCanvasElement>>(new Map());
   const reducedMotion = useReducedMotion();
+
+  function getGlowCanvas(color: string) {
+    const cache = glowCacheRef.current;
+    let canvas = cache.get(color);
+    if (!canvas) {
+      canvas = createGlowCanvas(color);
+      cache.set(color, canvas);
+    }
+    return canvas;
+  }
 
   function initNodes(width: number, height: number) {
     if (width === 0 || height === 0) return;
@@ -87,20 +115,22 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     ctx.clearRect(0, 0, width, height);
 
     // Conexiones
-    ctx.globalAlpha = 0.45;
+    ctx.strokeStyle = `rgb(${CONNECTION_COLOR_RGB})`;
+    ctx.lineWidth = 1.3;
+    const connectionDistanceSq = connectionDistance * connectionDistance;
     for (let i = 0; i < nodes.length; i++) {
       let connectionCount = 0;
       for (let j = i + 1; j < nodes.length && connectionCount < MAX_CONNECTIONS_PER_NODE; j++) {
         const dx = nodes[i].x - nodes[j].x;
         const dy = nodes[i].y - nodes[j].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < connectionDistance) {
+        const distSq = dx * dx + dy * dy;
+        if (distSq < connectionDistanceSq) {
+          const distance = Math.sqrt(distSq);
           const opacity = (1 - distance / connectionDistance) * 0.8;
+          ctx.globalAlpha = 0.45 * opacity;
           ctx.beginPath();
           ctx.moveTo(nodes[i].x, nodes[i].y);
           ctx.lineTo(nodes[j].x, nodes[j].y);
-          ctx.strokeStyle = `rgba(${CONNECTION_COLOR_RGB}, ${opacity})`;
-          ctx.lineWidth = 1.3;
           ctx.stroke();
           connectionCount++;
         }
@@ -113,19 +143,9 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
       const pulseScale = 1 + Math.sin(node.pulse) * 0.18;
 
       if (node.isMain) {
-        const gradient = ctx.createRadialGradient(
-          node.x, node.y, 0,
-          node.x, node.y, node.radius * 6 * pulseScale
-        );
-        gradient.addColorStop(0, node.color + '80');
-        gradient.addColorStop(0.4, node.color + '30');
-        gradient.addColorStop(1, 'transparent');
-
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius * 6 * pulseScale, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
+        const r = node.radius * 6 * pulseScale;
         ctx.globalAlpha = 0.7;
-        ctx.fill();
+        ctx.drawImage(getGlowCanvas(node.color), node.x - r, node.y - r, r * 2, r * 2);
         ctx.globalAlpha = 1;
       }
 
@@ -147,9 +167,9 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     }
   }
 
-  function update(width: number, height: number) {
+  function update(width: number, height: number, deltaTime = 1) {
     const nodes = nodesRef.current;
-    const targets = getNeuralTargets();
+    const targets = Array.from(neuralTargetMap.values());
 
     for (const node of nodes) {
       // Actualizar pulse en la fase de update, no en draw
@@ -185,8 +205,8 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         node.vy *= 1.02;
       }
 
-      node.x += node.vx;
-      node.y += node.vy;
+      node.x += node.vx * deltaTime;
+      node.y += node.vy * deltaTime;
 
       const padding = width < 768 ? 12 : 20;
       if (node.x < padding) {
@@ -216,11 +236,12 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < closest) closest = dist;
       }
-      setNeuralTargetDistance(target.id, closest);
+      setNeuralTargetDistance(target.id, Number.isFinite(closest) ? closest : 1000);
     }
   }
 
   function animate() {
+    if (!isRunningRef.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = ctxRef.current;
@@ -231,13 +252,18 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     const logicalHeight = canvas.height / dpr;
 
     if (logicalWidth === 0 || logicalHeight === 0) {
-      animationRef.current = requestAnimationFrame(animate);
+      animationRef.current = null;
       return;
     }
 
-    update(logicalWidth, logicalHeight);
+    const now = performance.now();
+    const deltaTime = Math.min((now - lastTimeRef.current) / 16.6667, 3);
+    lastTimeRef.current = now;
+
+    update(logicalWidth, logicalHeight, deltaTime);
     draw(logicalWidth, logicalHeight);
 
+    if (!isRunningRef.current) return;
     animationRef.current = requestAnimationFrame(animate);
   }
 
@@ -251,12 +277,8 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     const height = parent.clientHeight;
     if (width > 0 && height > 0) {
       const dpr = window.devicePixelRatio || 1;
-      const prevWidth = canvas.width;
-      const prevHeight = canvas.height;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
 
       const ctx = canvas.getContext('2d', { alpha: true });
       if (ctx) {
@@ -278,11 +300,15 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
       // Si reduced motion está activo, redibujar una vez tras resize
       if (reducedMotion) {
         if (ctx) draw(width, height);
+      } else if (!document.hidden && !animationRef.current) {
+        lastTimeRef.current = performance.now();
+        animate();
       }
     }
   }
 
   useEffect(() => {
+    isRunningRef.current = true;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -297,11 +323,17 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     }
 
     // Escuchar cambios de DPR (zoom, cambio de monitor)
-    const dprMedia = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
-    const handleDprChange = () => setupCanvas();
-    if ('addEventListener' in dprMedia) {
+    let dprMedia: MediaQueryList | undefined;
+    const handleDprChange = () => {
+      setupCanvas();
+      if (dprMedia) {
+        dprMedia.removeEventListener('change', handleDprChange);
+      }
+      dprMedia = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
       dprMedia.addEventListener('change', handleDprChange);
-    }
+    };
+    dprMedia = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+    dprMedia.addEventListener('change', handleDprChange);
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -310,6 +342,7 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
           animationRef.current = null;
         }
       } else if (!reducedMotion) {
+        lastTimeRef.current = performance.now();
         animate();
       }
     };
@@ -332,20 +365,22 @@ export function NeuralNetwork({ className }: NeuralNetworkProps) {
     }
 
     return () => {
+      isRunningRef.current = false;
       resizeObserverRef.current?.disconnect();
       window.removeEventListener('resize', setupCanvas);
-      if ('removeEventListener' in dprMedia) {
-        dprMedia.removeEventListener('change', handleDprChange);
-      }
+      dprMedia?.removeEventListener('change', handleDprChange);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
     };
   }, [reducedMotion]);
 
   return (
     <canvas
       ref={canvasRef}
-      className={className}
+      className={className ? `${className} pointer-events-none` : 'pointer-events-none'}
       style={{ display: 'block', width: '100%', height: '100%' }}
       aria-hidden="true"
     />

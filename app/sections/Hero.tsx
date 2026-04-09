@@ -134,13 +134,8 @@ export function Hero({ stars, forks, version }: HeroProps) {
 
       {/* Scroll indicator */}
       <button
+        type="button"
         onClick={() => document.getElementById('problem')?.scrollIntoView({ behavior: 'smooth' })}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            document.getElementById('problem')?.scrollIntoView({ behavior: 'smooth' });
-          }
-        }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer"
         aria-label="Scroll to next section"
       >

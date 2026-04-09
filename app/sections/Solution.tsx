@@ -91,11 +91,11 @@ export function Solution() {
             className="space-y-6 will-change-transform"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[--color-text]">
-              engram connects{' '}
+              Engram connects{' '}
               <span className="text-[--color-mauve]">your memories</span>
             </h2>
             <p className="text-lg text-[--color-subtext0] leading-relaxed">
-              engram gives your AI agents persistent memory across sessions. Built as a single Go binary
+              Engram gives your AI agents persistent memory across sessions. Built as a single Go binary
               with SQLite + FTS5, it provides full-text search, timeline navigation, and context injection
               for any MCP-compatible agent.
             </p>
