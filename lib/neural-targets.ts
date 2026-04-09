@@ -1,6 +1,6 @@
 import { MotionValue } from 'framer-motion';
 
-export interface NeuralTarget {
+interface NeuralTarget {
   id: string;
   x: number;
   y: number;
@@ -62,7 +62,7 @@ export function registerNeuralTarget(id: string, element: HTMLElement, range = 2
   return motionMap.get(id)!;
 }
 
-export function updateNeuralTarget(id: string, element: HTMLElement) {
+function updateNeuralTarget(id: string, element: HTMLElement) {
   if (!targetMap.has(id)) targetMap.set(id, { id, x: 0, y: 0, width: 0, height: 0, range: 220 });
   const rect = element.getBoundingClientRect();
   const t = targetMap.get(id)!;
@@ -80,14 +80,6 @@ export function unregisterNeuralTarget(id: string) {
 
 export const neuralTargetMap = targetMap;
 
-export function getNeuralTargets(): NeuralTarget[] {
-  return Array.from(targetMap.values());
-}
-
 export function setNeuralTargetDistance(id: string, distance: number) {
   motionMap.get(id)?.set(distance);
-}
-
-export function getNeuralTargetMotion(id: string): MotionValue<number> | undefined {
-  return motionMap.get(id);
 }
