@@ -4,7 +4,13 @@ import { Container } from '@/components/layout/Container';
 import { Button } from '@/components/ui/Button';
 import { ArrowRight, Star, GitFork } from 'lucide-react';
 
-export function Hero() {
+interface HeroProps {
+  stars: string;
+  forks: string;
+  version: string;
+}
+
+export function Hero({ stars, forks, version }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Overlay para legibilidad sobre neural global */}
@@ -63,21 +69,21 @@ export function Hero() {
             </Button>
           </div>
 
-          {/* GitHub stats */}
+          {/* GitHub stats - AHORA DINÁMICOS */}
           <div className="flex flex-wrap justify-center gap-5 text-[--color-subtext0] text-sm">
             <div className="flex items-center gap-1.5">
               <Star className="w-4 h-4 text-[--color-yellow]" />
-              <span className="font-semibold text-[--color-text]">2.3k</span>
+              <span className="font-semibold text-[--color-text]">{stars}</span>
               <span>stars</span>
             </div>
             <div className="flex items-center gap-1.5">
               <GitFork className="w-4 h-4 text-[--color-blue]" />
-              <span className="font-semibold text-[--color-text]">252</span>
+              <span className="font-semibold text-[--color-text]">{forks}</span>
               <span>forks</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[--color-green]" />
-              <span className="font-semibold text-[--color-text]">v1.11.0</span>
+              <span className="font-semibold text-[--color-text]">{version}</span>
             </div>
           </div>
         </div>

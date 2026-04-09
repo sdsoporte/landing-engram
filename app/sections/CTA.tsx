@@ -3,7 +3,12 @@ import { Section } from '@/components/layout/Section';
 import { Button } from '@/components/ui/Button';
 import { Star, ExternalLink } from 'lucide-react';
 
-export function CTA() {
+interface CTAProps {
+  stars: string;
+  forks: string;
+}
+
+export function CTA({ stars, forks }: CTAProps) {
   return (
     <Section id="cta" className="relative overflow-hidden">
       {/* Gradiente sutil */}
@@ -23,7 +28,7 @@ export function CTA() {
           </h2>
 
           <p className="text-lg text-[--color-subtext0]">
-            Join <span className="text-[--color-text] font-semibold">2,300+ developers</span> who never repeat the same explanation twice.
+            Join <span className="text-[--color-text] font-semibold">{stars} developers</span> who never repeat the same explanation twice.
           </p>
 
           {/* CTAs */}
@@ -48,12 +53,10 @@ export function CTA() {
             </Button>
           </div>
 
-          {/* Stats inline, sin card */}
+          {/* Stats inline - AHORA DINÁMICOS */}
           <div className="flex flex-wrap justify-center gap-6 pt-6 text-sm text-[--color-subtext0]">
-            <span><strong className="text-[--color-text]">2.3k</strong> stars</span>
-            <span><strong className="text-[--color-text]">252</strong> forks</span>
-            <span><strong className="text-[--color-text]">51</strong> releases</span>
-            <span><strong className="text-[--color-text]">MIT</strong> license</span>
+            <span><strong className="text-[--color-text]">{stars}</strong> stars</span>
+            <span><strong className="text-[--color-text]">{forks}</strong> forks</span>
           </div>
         </div>
       </Container>
